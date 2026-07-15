@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Kategori;
-use App\Models\Ticket;
-use App\Http\Requests\EventFormRequest; // Asumsi request validation dibuat terpisah
+use App\Models\Tiket; 
+use App\Http\Requests\EventFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +71,11 @@ class EventController extends Controller
                 $data['gambar'] = 'events/konser.jpg'; 
             }
 
+            // Tambahkan user_id dari user yang sedang login jika belum ada di request data
+            if (!isset($data['user_id'])) {
+                $data['user_id'] = auth()->id();
+            }
+
             // Create event dengan data dari form
             $event = Event::create($data);
 
@@ -79,8 +84,8 @@ class EventController extends Controller
                 foreach ($request->tikets as $tiketData) {
                     $event->tikets()->create([
                         'nama_tiket' => $tiketData['nama_tiket'],
-                        'harga' => $tiketData['harga'],
-                        'kuota' => $tiketData['kuota'],
+                        'harga'      => $tiketData['harga'],
+                        'stok'       => $tiketData['kuota'], // 🔄 SUDAH DISINKRONKAN: masuk ke kolom 'stok' database
                     ]);
                 }
             }
@@ -105,7 +110,6 @@ class EventController extends Controller
         $event->load('tikets');
         
         // Cek $event->hasSales() dan pass ke view
-        // Catatan: Pastikan method hasSales() sudah terdefinisi di Model Event Anda
         $hasSales = $event->hasSales();
 
         return view('pages.admin.events.edit', compact('event', 'kategoris', 'hasSales'));
@@ -140,22 +144,22 @@ class EventController extends Controller
             if ($request->has('tikets')) {
                 $submittedTicketIds = [];
 
-                foreach ($request->tikets as $tiketData) {
+                foreach ($request->input('tikets', []) as $tiketData) {
                     if (isset($tiketData['id'])) {
-                        // Update existing tickets
-                        $ticket = Ticket::findOrFail($tiketData['id']);
+                        // Update existing tickets menggunakan model Tiket
+                        $ticket = Tiket::findOrFail($tiketData['id']);
                         $ticket->update([
                             'nama_tiket' => $tiketData['nama_tiket'],
-                            'harga' => $tiketData['harga'],
-                            'kuota' => $tiketData['kuota'],
+                            'harga'      => $tiketData['harga'],
+                            'stok'       => $tiketData['kuota'], // 🔄 SUDAH DISINKRONKAN: masuk ke kolom 'stok' database
                         ]);
                         $submittedTicketIds[] = $ticket->id;
                     } else {
                         // Create new tickets
                         $newTicket = $event->tikets()->create([
                             'nama_tiket' => $tiketData['nama_tiket'],
-                            'harga' => $tiketData['harga'],
-                            'kuota' => $tiketData['kuota'],
+                            'harga'      => $tiketData['harga'],
+                            'stok'       => $tiketData['kuota'], // 🔄 SUDAH DISINKRONKAN: masuk ke kolom 'stok' database
                         ]);
                         $submittedTicketIds[] = $newTicket->id;
                     }

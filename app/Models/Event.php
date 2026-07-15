@@ -33,8 +33,7 @@ class Event extends Model
     
     /**
      * Relasi One-to-Many ke model Tiket (Satu event memiliki banyak tiket)
-     * * ⚠️ BARU/DIUBAH: Jika nama file model Anda menggunakan bahasa Inggris (Ticket.php),
-     * ganti Tiket::class di bawah menjadi Ticket::class.
+     * * ⚠️ Catatan: Menggunakan Tiket::class sesuai dengan data error log Anda.
      */
     public function tikets(): HasMany
     {
@@ -87,18 +86,15 @@ class Event extends Model
     // 2.1.4: Add Helper Methods
     
     /**
-     * ⚠️ BARU/DIUBAH: Method hasSales() yang diperbarui.
-     * Sekarang memeriksa penjualan lewat dua jalur (Double-check):
-     * 1. Melalui relasi langsung orders() pada event.
-     * 2. ATAU melalui relasi tiket yang memiliki detail transaksi.
+     * =========================================================================
+     * PERBAIKAN DI SINI: Menyederhanakan method hasSales()
+     * Langsung memeriksa ke tabel orders yang terbukti ada di skema database Anda,
+     * untuk menghindari BadMethodCallException dari model Tiket.
+     * =========================================================================
      */
     public function hasSales(): bool
     {
-        $hasDirectOrders = $this->orders()->exists();
-        
-        $hasTicketSales = $this->tikets()->whereHas('detailTransaksi')->exists();
-
-        return $hasDirectOrders || $hasTicketSales;
+        return $this->orders()->exists();
     }
 
     // 2.1.5: Add Query Scopes

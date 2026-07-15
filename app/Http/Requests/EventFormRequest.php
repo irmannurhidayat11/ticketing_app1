@@ -32,11 +32,13 @@ class EventFormRequest extends FormRequest
             'gambar'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
 
             // Rules untuk Tiket (Nested Array)
-            'tikets'          => 'required|array|min:1',
-            'tikets.*.tipe'   => 'required|in:reguler,premium',
-            'tikets.*.harga'  => 'required|numeric|min:0',
-            'tikets.*.stok'   => 'required|integer|min:0',
-            'tikets.*.id'     => 'nullable|exists:tikets,id', // Digunakan saat update tiket yang sudah ada
+            'tikets'                => 'required|array|min:1',
+            // 🔄 DIUBAH: Mengubah 'tipe' menjadi 'nama_tiket' sesuai dengan input name di blade dan controller
+            'tikets.*.nama_tiket'   => 'required|in:reguler,premium', 
+            'tikets.*.harga'        => 'required|numeric|min:0',
+            // 🔄 DIUBAH: Mengubah 'stok' menjadi 'kuota' sesuai dengan nama kolom database dan input name
+            'tikets.*.kuota'        => 'required|integer|min:0', 
+            'tikets.*.id'           => 'nullable|exists:tikets,id', 
         ];
     }
 
@@ -67,14 +69,16 @@ class EventFormRequest extends FormRequest
             'tikets.required'        => 'Minimal harus ada satu tiket yang ditambahkan.',
             'tikets.array'           => 'Format data tiket tidak valid.',
             'tikets.min'             => 'Minimal harus menambahkan 1 jenis tiket.',
-            'tikets.*.tipe.required' => 'Tipe tiket wajib dipilih.',
-            'tikets.*.tipe.in'       => 'Tipe tiket harus berupa reguler atau premium.',
+            // 🔄 DIUBAH: Menyesuaikan pesan error ke field 'nama_tiket'
+            'tikets.*.nama_tiket.required' => 'Tipe tiket wajib dipilih.',
+            'tikets.*.nama_tiket.in'       => 'Tipe tiket harus berupa reguler atau premium.',
             'tikets.*.harga.required'=> 'Harga tiket wajib diisi.',
             'tikets.*.harga.numeric' => 'Harga tiket harus berupa angka.',
             'tikets.*.harga.min'     => 'Harga tiket tidak boleh kurang dari 0.',
-            'tikets.*.stok.required' => 'Stok tiket wajib diisi.',
-            'tikets.*.stok.integer'  => 'Stok tiket harus berupa bilangan bulat.',
-            'tikets.*.stok.min'      => 'Stok tiket tidak boleh kurang dari 0.',
+            // 🔄 DIUBAH: Menyesuaikan pesan error ke field 'kuota'
+            'tikets.*.kuota.required' => 'Stok tiket wajib diisi.',
+            'tikets.*.kuota.integer'  => 'Stok tiket harus berupa bilangan bulat.',
+            'tikets.*.kuota.min'      => 'Stok tiket tidak boleh kurang dari 0.',
             'tikets.*.id.exists'     => 'ID tiket yang akan diperbarui tidak valid.',
         ];
     }
