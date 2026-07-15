@@ -152,9 +152,9 @@
         const btnAddTicket = document.getElementById('btnAddTicket');
         
         // UPDATE 1: Menggunakan json_encode agar VS Code bebas error/tanda merah
-        const hasSales = {{ json_encode($hasSales) }};
-        const existingTickets = {{ json_encode($event->tikets) }};
-        let ticketIndex = 0;
+        const hasSales = JSON.parse('{!! json_encode($hasSales) !!}');
+const existingTickets = JSON.parse('{!! json_encode($event->tikets) !!}');
+let ticketIndex = 0;
 
         function createTicketCard(ticket = null) {
             const index = ticketIndex;
