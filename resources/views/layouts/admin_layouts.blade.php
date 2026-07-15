@@ -11,12 +11,10 @@
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen flex">
-        <!-- Sidebar -->
         <aside class="w-64 bg-white shadow-lg">
             <div class="p-6">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Admin Panel</h2>
 
-                <!-- Sidebar Menu -->
                 <ul class="space-y-2">
 
                     <li>
@@ -38,10 +36,19 @@
                             Manajemen Kategori
                         </a>
                     </li>
+
+                    <li>
+                        <a href="{{ route('admin.events.index') }}"
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.events.*') ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                            </svg>
+                            <span>Manajemen Event</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
-            <!-- User Profile Section -->
             <div class="absolute bottom-0 w-64 p-6 border-t">
                 <div class="flex items-center">
                     <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -64,9 +71,7 @@
             </div>
         </aside>
 
-        <!-- Main Content Area -->
         <div class="flex-1 flex flex-col">
-            <!-- Top Header -->
             <header class="bg-white shadow-sm border-b">
                 <div class="px-6 py-4">
                     <div class="flex items-center justify-between">
@@ -80,7 +85,6 @@
                 </div>
             </header>
 
-            <!-- Main Content -->
             <main class="flex-1 overflow-y-auto bg-gray-50">
                 <div class="p-6">
                     @yield('content')
@@ -89,7 +93,6 @@
         </div>
     </div>
 
-    <!-- Success Toast Container -->
     @if(session('success'))
         <div id="successToast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
             {{ session('success') }}

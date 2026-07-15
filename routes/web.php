@@ -1,8 +1,10 @@
 <?php
 
+
+use App\Http\Controllers\Admin\EventController as AdminEventController; // Diberi alias di sini 👈
+use App\Http\Controllers\EventController; 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -11,9 +13,15 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Event routes
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
-
+Route::prefix('admin')->name('admin.events.')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/events', [EventController::class, 'index'])->name('index');
+    Route::get('/events/create', [EventController::class, 'create'])->name('create');
+    Route::post('/events', [EventController::class, 'store'])->name('store');
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('edit');
+    Route::put('/events/{event}', [EventController::class, 'update'])->name('update');
+    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('destroy');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-
+});
 // Category routes (admin)
 Route::prefix('admin')->name('categories.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/categories', [DashboardController::class, 'index'])->name('index');
